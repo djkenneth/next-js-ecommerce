@@ -1,0 +1,181 @@
+--------------  Custom arrow ------------------------------
+
+import React, { useRef } from 'react'
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import Image from 'next/image';
+
+// Default theme
+import '@splidejs/react-splide/css';
+
+const Index = () => {
+    const mainRef = useRef<Splide>(null);
+
+    const btnPrev = () => {
+        if ( mainRef.current ) {
+            mainRef?.current?.splide?.go('-1');
+        }
+    }
+
+    const btnNext = () => {
+        if ( mainRef.current ) {
+            mainRef?.current?.splide?.go('+1');
+        }
+    }
+
+  return (
+    <div>
+        <Splide aria-label="My Favorite Images" options={{
+            arrows: false
+        }}
+        ref={mainRef}
+        >
+            <SplideSlide>
+                <Image src="https://images.pexels.com/photos/1133957/pexels-photo-1133957.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={500} height={500} alt="Image 1"/>
+            </SplideSlide>
+            <SplideSlide>
+                <Image src="https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={500} height={500} alt="Image 2"/>
+            </SplideSlide>
+            <SplideSlide>
+                <Image src="https://images.pexels.com/photos/1133957/pexels-photo-1133957.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={500} height={500} alt="Image 1"/>
+            </SplideSlide>
+             <SplideSlide>
+                <Image src="https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={500} height={500} alt="Image 2"/>
+            </SplideSlide>
+        </Splide>
+
+        <button id="btnPrev" onClick={btnPrev}>prev</button> 
+        <button id="btnNext" onClick={btnNext}>next</button>
+    </div>
+  )
+}
+
+export default Index
+
+
+
+
+--------------------- Custom pagination bullet html ---------------
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="path/to/splide.min.css">
+  <script defer src="path/to/splide.min.js"></script>
+  <style>
+    /* Add your custom styles for pagination bullets here */
+    .custom-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      margin: 0 5px;
+      border-radius: 50%;
+      background-color: #555;
+      cursor: pointer;
+    }
+
+    .custom-pagination-bullet.splide__pagination__page--active {
+      background-color: #00f; /* Change the color for the active bullet */
+    }
+  </style>
+</head>
+<body>
+
+<div class="splide">
+  <div class="splide__track">
+    <ul class="splide__list">
+      <li class="splide__slide">Slide 1</li>
+      <li class="splide__slide">Slide 2</li>
+      <li class="splide__slide">Slide 3</li>
+      <!-- Add more slides as needed -->
+    </ul>
+  </div>
+  <div class="splide__pagination">
+    <!-- Custom pagination bullets will be added here -->
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var splide = new Splide('.splide', {
+      pagination: false, // Disable default pagination
+    }).mount();
+
+    // Create custom pagination bullets
+    var pagination = splide.Components.Elements.pagination;
+    var bulletContainer = pagination.root.querySelector('.splide__pagination');
+    
+    for (var i = 0; i < splide.length; i++) {
+      var bullet = document.createElement('div');
+      bullet.className = 'custom-pagination-bullet';
+      bulletContainer.appendChild(bullet);
+    }
+
+    // Update custom bullets on slide change
+    splide.on('moved', function (newIndex) {
+      var bullets = bulletContainer.children;
+      for (var i = 0; i < bullets.length; i++) {
+        bullets[i].classList.toggle('splide__pagination__page--active', i === newIndex);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+----------------- custom pagination react ---------------------
+
+import React, { useEffect } from 'react';
+import 'path/to/splide.min.css'; // Import Splide CSS
+import Splide from 'path/to/splide.min.js'; // Import Splide JS
+
+const SplideSlider = () => {
+  useEffect(() => {
+    const splide = new Splide('.splide', {
+      pagination: false, // Disable default pagination
+    }).mount();
+
+    // Create custom pagination bullets
+    const pagination = splide.Components.Elements.pagination;
+    const bulletContainer = pagination.root.querySelector('.splide__pagination');
+
+    for (let i = 0; i < splide.length; i++) {
+      const bullet = document.createElement('div');
+      bullet.className = 'custom-pagination-bullet';
+      bulletContainer.appendChild(bullet);
+    }
+
+    // Update custom bullets on slide change
+    splide.on('moved', (newIndex) => {
+      const bullets = bulletContainer.children;
+      for (let i = 0; i < bullets.length; i++) {
+        bullets[i].classList.toggle('splide__pagination__page--active', i === newIndex);
+      }
+    });
+
+    // Cleanup when the component unmounts
+    return () => {
+      splide.destroy();
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once when the component mounts
+
+  return (
+    <div className="splide">
+      <div className="splide__track">
+        <ul className="splide__list">
+          <li className="splide__slide">Slide 1</li>
+          <li className="splide__slide">Slide 2</li>
+          <li className="splide__slide">Slide 3</li>
+          {/* Add more slides as needed */}
+        </ul>
+      </div>
+      <div className="splide__pagination">
+        {/* Custom pagination bullets will be added here */}
+      </div>
+    </div>
+  );
+};
+
+export default SplideSlider;
